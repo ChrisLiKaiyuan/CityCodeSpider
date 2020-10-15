@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"github.com/parnurzeal/gorequest"
@@ -55,10 +56,10 @@ func main() {
 		Info interface{}
 	}
 	type JsonInfo struct {
-		Name string
+		Name          string
 		LevelProvince string
-		LevelCity string
-		LevelArea string
+		LevelCity     string
+		LevelArea     string
 	}
 
 	var dataz map[string]Json
@@ -86,10 +87,10 @@ func main() {
 		dataz[mapCode] = Json{
 			Code: mapCode,
 			Info: JsonInfo{
-				Name: province + city + area,
+				Name:          province + city + area,
 				LevelProvince: codeProvince,
-				LevelCity: codeCity,
-				LevelArea: codeArea,
+				LevelCity:     codeCity,
+				LevelArea:     codeArea,
 			},
 		}
 	}
@@ -99,7 +100,9 @@ func main() {
 		fmt.Println("Convert Failed.")
 		return
 	}
-	_, _ = fmt.Fprintln(file, string(data))
+	var buf bytes.Buffer
+	_ = json.Indent(&buf, data, "", "    ")
+	_, _ = fmt.Fprintln(file, buf.String())
 
 	_ = file.Close()
 }
